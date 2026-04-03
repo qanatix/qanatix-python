@@ -1,0 +1,128 @@
+# Qanatix Python SDK
+
+The official Python SDK for [Qanatix](https://qanatix.com) — ingest, search, and manage structured data for AI agents.
+
+## Install
+
+```bash
+pip install qanatix
+```
+
+With pandas support:
+
+```bash
+pip install qanatix[pandas]
+```
+
+## Quick start
+
+```python
+import qanatix
+
+qx = qanatix.Qanatix("sk_live_...")
+
+# Search
+results = qx.search("parts_catalog", "stainless M8 bolt")
+for r in results.results:
+    print(r.name, r.score)
+
+# Ingest
+result = qx.ingest.batch("parts_catalog", "fastener", [
+    {"name": "Hex Bolt M8x40", "material": "stainless", "price_eur": 0.12},
+    {"name": "Hex Nut M8", "material": "carbon steel", "price_eur": 0.04},
+])
+print(f"Accepted: {result.summary.accepted}")
+
+# Records
+rec = qx.records.create("parts_catalog", "fastener", "New Part", {"price_eur": 1.50})
+print(rec.record_id)
+```
+
+## Public data (no API key)
+
+```python
+import qanatix
+
+qx = qanatix.QanatixOpen()
+
+results = qx.search("us-spending", "NASA renewable energy")
+collections = qx.collections.list()
+```
+
+## Async
+
+```python
+import qanatix
+
+# Private
+async with qanatix.AsyncQanatix("sk_live_...") as qx:
+    results = await qx.search("parts_catalog", "stainless bolt")
+
+# Open
+async with qanatix.AsyncQanatixOpen() as qx:
+    results = await qx.search("us-spending", "NASA grants")
+```
+
+## Clients
+
+| Client | Auth | Resources |
+|---|---|---|
+| `Qanatix("sk_live_...")` | API key | records, ingest, search, schemas, connectors, collections, keys, export |
+| `QanatixOpen()` | None | search, collections |
+| `AsyncQanatix("sk_live_...")` | API key | All above, async |
+| `AsyncQanatixOpen()` | None | search, collections, async |
+
+## Features
+
+- **Search** — full-text + filters, auto-paginating iterator via `qx.search.iter()`
+- **Ingest** — batch JSON, file upload (CSV/JSON/XML), DataFrame support
+- **Auto-chunking** — batches >5,000 records split automatically
+- **Retry** — exponential backoff on 429/502/503/504
+- **Records** — CRUD + bulk update/delete
+- **Schemas** — register and retrieve JSON Schemas
+- **Connectors** — pull from PostgreSQL, MySQL, MongoDB, Neo4j
+- **Collections** — list and update collection metadata
+- **API Keys** — create, list, revoke, rotate
+- **Webhooks** — `verify_signature()` for incoming webhook payloads
+- **Sync + Async** — `Qanatix` / `AsyncQanatix` + `QanatixOpen` / `AsyncQanatixOpen`
+
+## All methods
+
+| Method | Description |
+|---|---|
+| `qx.search(col, query, ...)` | Search a collection |
+| `qx.search.iter(col, query, ...)` | Auto-paginate search results |
+| `qx.records.create(...)` | Create a record |
+| `qx.records.get(id)` | Get a record by ID |
+| `qx.records.list(...)` | List records |
+| `qx.records.update(id, ...)` | Update a record |
+| `qx.records.delete(id)` | Delete a record |
+| `qx.records.bulk_update(ids, ...)` | Bulk update records |
+| `qx.records.bulk_delete(ids)` | Bulk delete records |
+| `qx.ingest.batch(col, type, records)` | Ingest JSON batch |
+| `qx.ingest.upload(col, type, path)` | Upload file |
+| `qx.ingest.from_dataframe(col, type, df)` | Ingest from DataFrame |
+| `qx.ingest.status(upload_id)` | Check upload status |
+| `qx.ingest.errors(upload_id)` | Get upload errors |
+| `qx.schemas.register(col, type, schema)` | Register a schema |
+| `qx.schemas.list(...)` | List schemas |
+| `qx.schemas.get(col, type)` | Get a schema |
+| `qx.connectors.create(...)` | Create a connector |
+| `qx.connectors.list()` | List connectors |
+| `qx.connectors.pull(id)` | Trigger a pull |
+| `qx.connectors.delete(id)` | Delete a connector |
+| `qx.collections.list()` | List collections |
+| `qx.collections.update(name, ...)` | Update collection metadata |
+| `qx.keys.create(name, scopes)` | Create an API key |
+| `qx.keys.list()` | List API keys |
+| `qx.keys.revoke(id)` | Revoke an API key |
+| `qx.keys.rotate(id)` | Rotate an API key |
+| `qx.export(col, format)` | Stream export |
+
+## Docs
+
+Full documentation at [qanatix.dev/docs/getting-started/python-sdk](https://qanatix.dev/docs/getting-started/python-sdk)
+
+## License
+
+MIT
