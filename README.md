@@ -45,7 +45,7 @@ import qanatix
 
 qx = qanatix.QanatixOpen()
 
-results = qx.search("us-spending", "NASA renewable energy")
+results = qx.search("suppliers", "ISO 9001 certified Germany")
 collections = qx.collections.list()
 ```
 
@@ -60,7 +60,7 @@ async with qanatix.AsyncQanatix("sk_live_...") as qx:
 
 # Open
 async with qanatix.AsyncQanatixOpen() as qx:
-    results = await qx.search("us-spending", "NASA grants")
+    results = await qx.search("suppliers", "CNC machining Germany")
 ```
 
 ## Clients
