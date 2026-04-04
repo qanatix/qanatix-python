@@ -13,6 +13,7 @@ from .connectors import Connectors, AsyncConnectors
 from .collections import Collections, AsyncCollections
 from .keys import Keys, AsyncKeys
 from .webhooks import verify_signature
+from .webhooks_resource import WebhooksMgmt, AsyncWebhooksMgmt
 from .errors import (
     QanatixError,
     AuthenticationError,
@@ -34,6 +35,7 @@ from .types import (
     ApiKey,
     Connector,
     Schema,
+    WebhookSubscription,
 )
 
 __version__ = "0.1.0"
@@ -62,6 +64,7 @@ __all__ = [
     "ApiKey",
     "Connector",
     "Schema",
+    "WebhookSubscription",
 ]
 
 
@@ -94,6 +97,7 @@ class Qanatix:
         self.connectors = Connectors(self._http)
         self.collections = Collections(self._http)
         self.keys = Keys(self._http)
+        self.webhooks = WebhooksMgmt(self._http)
 
     def export(self, collection: str, *, format: str = "json") -> Any:
         """Stream export of a collection."""
@@ -137,6 +141,7 @@ class AsyncQanatix:
         self.connectors = AsyncConnectors(self._http)
         self.collections = AsyncCollections(self._http)
         self.keys = AsyncKeys(self._http)
+        self.webhooks = AsyncWebhooksMgmt(self._http)
 
     async def export(self, collection: str, *, format: str = "json") -> Any:
         """Export is not yet supported in async mode. Use sync client."""
