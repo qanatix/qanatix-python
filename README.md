@@ -122,7 +122,28 @@ async with qanatix.AsyncQanatixOpen() as qx:
 | `qx.webhooks.delete(id)` | Delete a webhook |
 | `qx.webhooks.test(id)` | Send a test event |
 | `qx.webhooks.deliveries(id)` | View delivery history |
+| `qx.query(sql)` | Execute read-only SQL query |
 | `qx.export(col, format)` | Stream export |
+
+## Direct SQL Queries
+
+Run read-only SQL against your data — no LLM needed:
+
+```python
+result = qx.query("""
+    SELECT name, data->>'ticker' as ticker, (data->>'ter_percent')::numeric as ter
+    FROM records
+    WHERE tenant_id = :tenant_id AND collection = 'etfs' AND status = 'active'
+    AND (data->>'ter_percent')::numeric < 0.15
+    ORDER BY ter
+    LIMIT 20
+""")
+
+for row in result["rows"]:
+    print(f"{row['ticker']}: {row['ter']}%")
+```
+
+Rules: SELECT only, must include `WHERE tenant_id = :tenant_id`, must include `LIMIT`, max 100 rows, 10s timeout.
 
 ## Docs
 

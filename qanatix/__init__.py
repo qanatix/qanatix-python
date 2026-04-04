@@ -99,6 +99,18 @@ class Qanatix:
         self.keys = Keys(self._http)
         self.webhooks = WebhooksMgmt(self._http)
 
+    def query(self, sql: str) -> dict:
+        """Execute a read-only SQL query against your data.
+
+        The records table has columns: id, tenant_id, collection, record_type,
+        name, description, data (JSONB), status, visibility, created_at.
+        Access JSONB fields: data->>'field_name' for text, (data->>'field')::numeric for numbers.
+        Must include WHERE tenant_id = :tenant_id. Must include LIMIT (max 100).
+
+        Returns dict with 'columns', 'rows', and 'row_count'.
+        """
+        return self._http.request("POST", f"{self._http.api_prefix}/portal/query", json={"sql": sql})
+
     def export(self, collection: str, *, format: str = "json") -> Any:
         """Stream export of a collection."""
         return self._http.stream_get(
@@ -142,6 +154,10 @@ class AsyncQanatix:
         self.collections = AsyncCollections(self._http)
         self.keys = AsyncKeys(self._http)
         self.webhooks = AsyncWebhooksMgmt(self._http)
+
+    async def query(self, sql: str) -> dict:
+        """Execute a read-only SQL query. See Qanatix.query() for details."""
+        return await self._http.request("POST", f"{self._http.api_prefix}/portal/query", json={"sql": sql})
 
     async def export(self, collection: str, *, format: str = "json") -> Any:
         """Export is not yet supported in async mode. Use sync client."""
