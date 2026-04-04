@@ -99,17 +99,29 @@ class Qanatix:
         self.keys = Keys(self._http)
         self.webhooks = WebhooksMgmt(self._http)
 
-    def query(self, sql: str) -> dict:
-        """Execute a read-only SQL query against your data.
+    def chat(self, message: str, *, history: list[dict] | None = None) -> str:
+        """Ask a question about your data in natural language.
 
-        The records table has columns: id, tenant_id, collection, record_type,
-        name, description, data (JSONB), status, visibility, created_at.
-        Access JSONB fields: data->>'field_name' for text, (data->>'field')::numeric for numbers.
-        Must include WHERE tenant_id = :tenant_id. Must include LIMIT (max 100).
+        Qanatix uses AI to query your collections — writes SQL, executes it,
+        and returns a formatted answer. Counts as 1 search.
 
-        Returns dict with 'columns', 'rows', and 'row_count'.
+        Args:
+            message: Your question (e.g. "Show me ETFs with fees under 0.1%")
+            history: Optional conversation history [{role, content}, ...]
+
+        Returns:
+            The assistant's response as a string (markdown formatted).
         """
-        return self._http.request("POST", f"{self._http.api_prefix}/portal/query", json={"sql": sql})
+        resp = self._http.request("POST", f"{self._http.api_prefix}/chat", json={
+            "message": message,
+            "history": history or [],
+        })
+        if isinstance(resp, dict):
+            if resp.get("error"):
+                from .errors import QanatixError
+                raise QanatixError(resp["error"], status_code=resp.get("status"))
+            return resp.get("response", "")
+        return str(resp)
 
     def export(self, collection: str, *, format: str = "json") -> Any:
         """Stream export of a collection."""
@@ -155,9 +167,18 @@ class AsyncQanatix:
         self.keys = AsyncKeys(self._http)
         self.webhooks = AsyncWebhooksMgmt(self._http)
 
-    async def query(self, sql: str) -> dict:
-        """Execute a read-only SQL query. See Qanatix.query() for details."""
-        return await self._http.request("POST", f"{self._http.api_prefix}/portal/query", json={"sql": sql})
+    async def chat(self, message: str, *, history: list[dict] | None = None) -> str:
+        """Ask a question about your data. See Qanatix.chat() for details."""
+        resp = await self._http.request("POST", f"{self._http.api_prefix}/chat", json={
+            "message": message,
+            "history": history or [],
+        })
+        if isinstance(resp, dict):
+            if resp.get("error"):
+                from .errors import QanatixError
+                raise QanatixError(resp["error"], status_code=resp.get("status"))
+            return resp.get("response", "")
+        return str(resp)
 
     async def export(self, collection: str, *, format: str = "json") -> Any:
         """Export is not yet supported in async mode. Use sync client."""
