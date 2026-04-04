@@ -67,7 +67,7 @@ async with qanatix.AsyncQanatixOpen() as qx:
 
 | Client | Auth | Resources |
 |---|---|---|
-| `Qanatix("sk_live_...")` | API key | records, ingest, search, schemas, connectors, collections, keys, export |
+| `Qanatix("sk_live_...")` | API key | records, ingest, search, schemas, connectors, webhooks, collections, keys, export |
 | `QanatixOpen()` | None | search, collections |
 | `AsyncQanatix("sk_live_...")` | API key | All above, async |
 | `AsyncQanatixOpen()` | None | search, collections, async |
@@ -83,7 +83,7 @@ async with qanatix.AsyncQanatixOpen() as qx:
 - **Connectors** — pull from PostgreSQL, MySQL, MongoDB, Neo4j
 - **Collections** — list and update collection metadata
 - **API Keys** — create, list, revoke, rotate
-- **Webhooks** — `verify_signature()` for incoming webhook payloads
+- **Webhooks** — create, list, test, and delete webhook subscriptions + `verify_signature()` for incoming payloads
 - **Sync + Async** — `Qanatix` / `AsyncQanatix` + `QanatixOpen` / `AsyncQanatixOpen`
 
 ## All methods
@@ -117,6 +117,11 @@ async with qanatix.AsyncQanatixOpen() as qx:
 | `qx.keys.list()` | List API keys |
 | `qx.keys.revoke(id)` | Revoke an API key |
 | `qx.keys.rotate(id)` | Rotate an API key |
+| `qx.webhooks.create(url, events, ...)` | Create a webhook subscription |
+| `qx.webhooks.list()` | List webhooks |
+| `qx.webhooks.delete(id)` | Delete a webhook |
+| `qx.webhooks.test(id)` | Send a test event |
+| `qx.webhooks.deliveries(id)` | View delivery history |
 | `qx.export(col, format)` | Stream export |
 
 ## Docs
