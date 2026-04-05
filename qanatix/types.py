@@ -75,33 +75,6 @@ class IngestionResult:
     summary: UploadSummary
     errors: list[UploadError] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
-    _client: Any = field(default=None, repr=False)
-
-    def wait(self, poll_interval: float = 1.0, timeout: float = 300.0) -> "IngestionResult":
-        """Poll until upload completes. Sync only."""
-        if self._client is None:
-            raise RuntimeError("Cannot poll without a client reference")
-        import time
-        elapsed = 0.0
-        while self.status not in ("complete", "failed") and elapsed < timeout:
-            time.sleep(poll_interval)
-            elapsed += poll_interval
-            result = self._client._get(f"/uploads/{self.upload_id}")
-            self.status = result.get("status", self.status)
-        return self
-
-    async def async_wait(self, poll_interval: float = 1.0, timeout: float = 300.0) -> "IngestionResult":
-        """Poll until upload completes. Async only."""
-        if self._client is None:
-            raise RuntimeError("Cannot poll without a client reference")
-        import asyncio
-        elapsed = 0.0
-        while self.status not in ("complete", "failed") and elapsed < timeout:
-            await asyncio.sleep(poll_interval)
-            elapsed += poll_interval
-            result = await self._client._get(f"/uploads/{self.upload_id}")
-            self.status = result.get("status", self.status)
-        return self
 
 
 @dataclass

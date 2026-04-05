@@ -2,13 +2,13 @@
 """Example: ETF Dashboard — showcases Qanatix SDK end-to-end.
 
 This script demonstrates:
-2. Batch data ingestion
+1. Batch data ingestion
+2. Collection listing
 3. Full-text search
 4. Auto-paginating search iterator
-5. Webhook subscription for real-time notifications
-6. Collection listing
-7. Record CRUD
-8. Export
+5. Record CRUD
+6. Webhook subscription for real-time notifications
+7. Clean up
 
 Usage:
     pip install qanatix
@@ -48,42 +48,42 @@ def main():
     print("=" * 60)
 
     # ── 1. Ingest data ──
-    print("\n2. Ingesting ETF data...")
+    print("\n1. Ingesting ETF data...")
     result = qx.ingest.batch(COLLECTION, RECORD_TYPE, ETFS)
     print(f"   Submitted: {result.summary.submitted}")
     print(f"   Accepted:  {result.summary.accepted}")
     print(f"   Rejected:  {result.summary.rejected}")
 
-    # ── 3. List collections ──
-    print("\n3. Listing collections...")
+    # ── 2. List collections ──
+    print("\n2. Listing collections...")
     for c in qx.collections.list():
         print(f"   {c.collection}: {c.record_count} records")
 
-    # ── 4. Search ──
-    print("\n4. Searching for 'gold'...")
+    # ── 3. Search ──
+    print("\n3. Searching for 'gold'...")
     results = qx.search(COLLECTION, "gold", limit=5)
     for r in results.results:
         print(f"   {r.name} (score: {r.score:.2f})")
 
-    # ── 5. Auto-paginating iterator ──
-    print("\n5. Iterating all records...")
+    # ── 4. Auto-paginating iterator ──
+    print("\n4. Iterating all records...")
     count = 0
     for record in qx.search.iter(COLLECTION, "", page_size=10):
         count += 1
         print(f"   [{count}] {record.name}")
     print(f"   Total: {count} records")
 
-    # ── 6. Get a record by ID ──
+    # ── 5. Get a record by ID ──
     if results.results:
-        print("\n6. Getting record by ID...")
+        print("\n5. Getting record by ID...")
         rec = qx.records.get(results.results[0].record_id)
         print(f"   Name: {rec.name}")
         print(f"   Data: {rec.data}")
+        fields = list(rec.data.keys()) if rec.data else []
+        print(f"   Fields: {', '.join(fields)}")
 
-    print(f"   Fields: {', '.join(fields)}")
-
-    # ── 8. Create a webhook ──
-    print("\n8. Creating webhook...")
+    # ── 6. Create a webhook ──
+    print("\n6. Creating webhook...")
     try:
         wh = qx.webhooks.create(
             url="https://httpbin.org/post",
@@ -103,8 +103,8 @@ def main():
     except Exception as e:
         print(f"   Webhook: {e} (may not be available)")
 
-    # ── 9. Clean up ──
-    print("\n9. Cleaning up...")
+    # ── 7. Clean up ──
+    print("\n7. Cleaning up...")
     for record in qx.search.iter(COLLECTION, "", page_size=50):
         qx.records.delete(record.record_id)
     print("   Records deleted ✓")
