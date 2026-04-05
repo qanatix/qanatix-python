@@ -135,13 +135,6 @@ class Connector:
 
 
 @dataclass
-class Schema:
-    collection: str
-    record_type: str
-    json_schema: dict[str, Any] = field(default_factory=dict)
-
-
-@dataclass
 class WebhookSubscription:
     id: str
     url: str
@@ -150,40 +143,3 @@ class WebhookSubscription:
     active: bool = True
     description: str | None = None
     created_at: str | None = None
-
-
-@dataclass
-class Member:
-    id: str
-    email: str
-    full_name: str | None = None
-    role: str = "member"
-    created_at: str | None = None
-
-
-@dataclass
-class Invite:
-    id: str
-    email: str
-    role: str = "member"
-    expires_at: str | None = None
-    created_at: str | None = None
-
-
-@dataclass
-class AuditEntry:
-    id: str
-    actor_email: str | None = None
-    action: str = ""
-    resource_type: str | None = None
-    resource_id: str | None = None
-    ip_address: str | None = None
-    created_at: str | None = None
-
-
-@dataclass
-class AuditPage:
-    entries: list[AuditEntry] = field(default_factory=list)
-    total: int = 0
-    page: int = 1
-    pages: int = 1

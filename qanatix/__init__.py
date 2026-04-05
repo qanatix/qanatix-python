@@ -8,7 +8,6 @@ from .client import _SyncHTTP, _AsyncHTTP, _DEFAULT_BASE_URL, _DEFAULT_TIMEOUT, 
 from .records import Records, AsyncRecords
 from .ingest import Ingest, AsyncIngest
 from .search import Search, AsyncSearch
-from .schemas import Schemas, AsyncSchemas
 from .connectors import Connectors, AsyncConnectors
 from .collections import Collections, AsyncCollections
 from .keys import Keys, AsyncKeys
@@ -34,7 +33,6 @@ from .types import (
     CollectionInfo,
     ApiKey,
     Connector,
-    Schema,
     WebhookSubscription,
 )
 
@@ -63,7 +61,6 @@ __all__ = [
     "CollectionInfo",
     "ApiKey",
     "Connector",
-    "Schema",
     "WebhookSubscription",
 ]
 
@@ -93,7 +90,6 @@ class Qanatix:
         self.records = Records(self._http)
         self.ingest = Ingest(self._http)
         self.search = Search(self._http)
-        self.schemas = Schemas(self._http)
         self.connectors = Connectors(self._http)
         self.collections = Collections(self._http)
         self.keys = Keys(self._http)
@@ -161,7 +157,6 @@ class AsyncQanatix:
         self.records = AsyncRecords(self._http)
         self.ingest = AsyncIngest(self._http)
         self.search = AsyncSearch(self._http)
-        self.schemas = AsyncSchemas(self._http)
         self.connectors = AsyncConnectors(self._http)
         self.collections = AsyncCollections(self._http)
         self.keys = AsyncKeys(self._http)

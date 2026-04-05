@@ -165,12 +165,6 @@ class TestAuthSearch:
         assert isinstance(resp.results, list)
 
 
-class TestAuthSchemas:
-    def test_list(self):
-        with auth_client() as qx:
-            schemas = qx.schemas.list()
-        assert isinstance(schemas, list)
-
 
 class TestAuthKeys:
     def test_list(self):
@@ -194,16 +188,6 @@ class TestAuthIngest:
             import uuid
             col = f"sdk-test-{uuid.uuid4().hex[:8]}"
             rtype = "widget"
-
-            # Register schema
-            qx.schemas.register(col, rtype, {
-                "type": "object",
-                "properties": {
-                    "color": {"type": "string"},
-                    "weight_kg": {"type": "number"},
-                },
-                "required": ["color"],
-            })
 
             # Ingest
             result = qx.ingest.batch(col, rtype, [

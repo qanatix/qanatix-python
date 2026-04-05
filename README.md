@@ -67,7 +67,6 @@ async with qanatix.AsyncQanatixOpen() as qx:
 
 | Client | Auth | Resources |
 |---|---|---|
-| `Qanatix("sk_live_...")` | API key | records, ingest, search, schemas, connectors, webhooks, collections, keys, export |
 | `QanatixOpen()` | None | search, collections |
 | `AsyncQanatix("sk_live_...")` | API key | All above, async |
 | `AsyncQanatixOpen()` | None | search, collections, async |
@@ -79,7 +78,6 @@ async with qanatix.AsyncQanatixOpen() as qx:
 - **Auto-chunking** — batches >5,000 records split automatically
 - **Retry** — exponential backoff on 429/502/503/504
 - **Records** — CRUD + bulk update/delete
-- **Schemas** — register and retrieve JSON Schemas
 - **Connectors** — pull from PostgreSQL, MySQL, MongoDB, Neo4j
 - **Collections** — list and update collection metadata
 - **API Keys** — create, list, revoke, rotate
@@ -104,9 +102,6 @@ async with qanatix.AsyncQanatixOpen() as qx:
 | `qx.ingest.from_dataframe(col, type, df)` | Ingest from DataFrame |
 | `qx.ingest.status(upload_id)` | Check upload status |
 | `qx.ingest.errors(upload_id)` | Get upload errors |
-| `qx.schemas.register(col, type, schema)` | Register a schema |
-| `qx.schemas.list(...)` | List schemas |
-| `qx.schemas.get(col, type)` | Get a schema |
 | `qx.connectors.create(...)` | Create a connector |
 | `qx.connectors.list()` | List connectors |
 | `qx.connectors.pull(id)` | Trigger a pull |

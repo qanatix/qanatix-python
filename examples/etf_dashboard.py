@@ -2,7 +2,6 @@
 """Example: ETF Dashboard — showcases Qanatix SDK end-to-end.
 
 This script demonstrates:
-1. Schema registration (auto-detected on upload, but can be explicit)
 2. Batch data ingestion
 3. Full-text search
 4. Auto-paginating search iterator
@@ -48,26 +47,7 @@ def main():
     print("Qanatix ETF Dashboard Example")
     print("=" * 60)
 
-    # ── 1. Register schema (optional — auto-detected on first upload) ──
-    print("\n1. Registering schema...")
-    qx.schemas.register(COLLECTION, RECORD_TYPE, {
-        "type": "object",
-        "properties": {
-            "ticker": {"type": "string"},
-            "provider": {"type": "string"},
-            "isin": {"type": "string"},
-            "ter_percent": {"type": "number"},
-            "aum_eur": {"type": "number"},
-            "asset_class": {"type": "string"},
-            "replication": {"type": "string"},
-            "distribution": {"type": "string"},
-            "inception_year": {"type": "integer"},
-        },
-        "required": ["ticker", "provider"],
-    })
-    print("   Schema registered ✓")
-
-    # ── 2. Ingest data ──
+    # ── 1. Ingest data ──
     print("\n2. Ingesting ETF data...")
     result = qx.ingest.batch(COLLECTION, RECORD_TYPE, ETFS)
     print(f"   Submitted: {result.summary.submitted}")
@@ -100,12 +80,7 @@ def main():
         print(f"   Name: {rec.name}")
         print(f"   Data: {rec.data}")
 
-    # ── 7. View schema ──
-    print("\n7. Viewing schema...")
-    schema = qx.schemas.get(COLLECTION, RECORD_TYPE)
-    fields = list(schema.json_schema.get("properties", {}).keys())
     print(f"   Fields: {', '.join(fields)}")
-    print(f"   Required: {schema.json_schema.get('required', [])}")
 
     # ── 8. Create a webhook ──
     print("\n8. Creating webhook...")

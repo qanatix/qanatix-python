@@ -229,26 +229,6 @@ class TestIngest:
         assert result.summary.accepted == CHUNK_SIZE + 100
 
 
-# ── Schemas ──
-
-class TestSchemas:
-    def test_register(self):
-        http = FakeHTTP([{
-            "collection": "col", "record_type": "type",
-            "json_schema": {"type": "object"},
-        }])
-        s = qanatix.schemas.Schemas(http)
-        schema = s.register("col", "type", {"type": "object"})
-        assert schema.collection == "col"
-
-    def test_list(self):
-        http = FakeHTTP([{"schemas": [
-            {"collection": "c1", "record_type": "t1", "json_schema": {}},
-        ]}])
-        s = qanatix.schemas.Schemas(http)
-        schemas = s.list()
-        assert len(schemas) == 1
-
 
 # ── Collections ──
 
@@ -319,7 +299,6 @@ class TestClientInit:
         qx.records = qanatix.records.Records(http)
         qx.search = qanatix.search.Search(http)
         qx.ingest = qanatix.ingest.Ingest(http)
-        qx.schemas = qanatix.schemas.Schemas(http)
         qx.connectors = qanatix.connectors.Connectors(http)
         qx.collections = qanatix.collections.Collections(http)
         qx.keys = qanatix.keys.Keys(http)
