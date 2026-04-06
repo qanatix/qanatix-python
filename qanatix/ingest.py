@@ -8,7 +8,7 @@ from .client import CHUNK_SIZE
 from .types import IngestionResult, UploadSummary, UploadError
 
 
-def _to_result(data: dict, client=None) -> IngestionResult:
+def _to_result(data: dict) -> IngestionResult:
     summary = data.get("summary", {})
     errors = data.get("errors", [])
     return IngestionResult(
@@ -30,7 +30,6 @@ def _to_result(data: dict, client=None) -> IngestionResult:
             for e in errors
         ],
         metadata=data.get("metadata", {}),
-        _client=client,
     )
 
 
@@ -54,7 +53,7 @@ class Ingest:
             data = self._http.request(
                 "POST", f"{self._batch}/{collection}/{record_type}", json=records,
             )
-            return _to_result(data, client=self._http)
+            return _to_result(data)
 
         # Auto-chunk
         total_accepted = 0
@@ -86,7 +85,6 @@ class Ingest:
                 rejected=total_rejected,
             ),
             errors=all_errors,
-            _client=self._http,
         )
 
     def upload(
@@ -106,7 +104,7 @@ class Ingest:
         data = self._http.upload(
             f"{self._upload}/{collection}/{record_type}", file_data, filename, ct,
         )
-        return _to_result(data, client=self._http)
+        return _to_result(data)
 
     def status(self, upload_id: str) -> dict[str, Any]:
         return self._http.request("GET", f"{self._uploads}/{upload_id}")
@@ -152,7 +150,7 @@ class AsyncIngest:
             data = await self._http.request(
                 "POST", f"{self._batch}/{collection}/{record_type}", json=records,
             )
-            return _to_result(data, client=self._http)
+            return _to_result(data)
 
         total_accepted = 0
         total_rejected = 0
@@ -183,7 +181,6 @@ class AsyncIngest:
                 rejected=total_rejected,
             ),
             errors=all_errors,
-            _client=self._http,
         )
 
     async def upload(
@@ -202,7 +199,7 @@ class AsyncIngest:
         data = await self._http.upload(
             f"{self._upload}/{collection}/{record_type}", file_data, filename, ct,
         )
-        return _to_result(data, client=self._http)
+        return _to_result(data)
 
     async def status(self, upload_id: str) -> dict[str, Any]:
         return await self._http.request("GET", f"{self._uploads}/{upload_id}")

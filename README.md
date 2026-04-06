@@ -67,8 +67,9 @@ async with qanatix.AsyncQanatixOpen() as qx:
 
 | Client | Auth | Resources |
 |---|---|---|
+| `Qanatix("sk_live_...")` | API key | All resources |
 | `QanatixOpen()` | None | search, collections |
-| `AsyncQanatix("sk_live_...")` | API key | All above, async |
+| `AsyncQanatix("sk_live_...")` | API key | All resources, async |
 | `AsyncQanatixOpen()` | None | search, collections, async |
 
 ## Features
