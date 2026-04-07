@@ -207,10 +207,12 @@ class QanatixOpen:
     def __init__(
         self,
         *,
+        agent_id: str | None = None,
         base_url: str = _DEFAULT_BASE_URL,
         timeout: float = _DEFAULT_TIMEOUT,
     ):
-        self._http = _SyncHTTP(None, base_url, timeout, _OPEN_API_PREFIX)
+        extra_headers = {"X-Agent-Id": agent_id} if agent_id else None
+        self._http = _SyncHTTP(None, base_url, timeout, _OPEN_API_PREFIX, extra_headers=extra_headers)
         self.search = Search(self._http)
         self.collections = Collections(self._http)
 
@@ -238,10 +240,12 @@ class AsyncQanatixOpen:
     def __init__(
         self,
         *,
+        agent_id: str | None = None,
         base_url: str = _DEFAULT_BASE_URL,
         timeout: float = _DEFAULT_TIMEOUT,
     ):
-        self._http = _AsyncHTTP(None, base_url, timeout, _OPEN_API_PREFIX)
+        extra_headers = {"X-Agent-Id": agent_id} if agent_id else None
+        self._http = _AsyncHTTP(None, base_url, timeout, _OPEN_API_PREFIX, extra_headers=extra_headers)
         self.search = AsyncSearch(self._http)
         self.collections = AsyncCollections(self._http)
 

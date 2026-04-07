@@ -27,13 +27,22 @@ def _backoff(attempt: int, retry_after: float | None = None) -> float:
 class _SyncHTTP:
     """Synchronous HTTP transport with retry."""
 
-    def __init__(self, api_key: str | None, base_url: str, timeout: float, api_prefix: str = _DEFAULT_API_PREFIX):
+    def __init__(
+        self,
+        api_key: str | None,
+        base_url: str,
+        timeout: float,
+        api_prefix: str = _DEFAULT_API_PREFIX,
+        extra_headers: dict[str, str] | None = None,
+    ):
         headers = {
             "Content-Type": "application/json",
             "User-Agent": "qanatix-python/0.1.0",
         }
         if api_key:
             headers["Authorization"] = f"Bearer {api_key}"
+        if extra_headers:
+            headers.update(extra_headers)
         self._client = httpx.Client(
             base_url=base_url,
             headers=headers,
@@ -94,13 +103,22 @@ class _SyncHTTP:
 class _AsyncHTTP:
     """Async HTTP transport with retry."""
 
-    def __init__(self, api_key: str | None, base_url: str, timeout: float, api_prefix: str = _DEFAULT_API_PREFIX):
+    def __init__(
+        self,
+        api_key: str | None,
+        base_url: str,
+        timeout: float,
+        api_prefix: str = _DEFAULT_API_PREFIX,
+        extra_headers: dict[str, str] | None = None,
+    ):
         headers = {
             "Content-Type": "application/json",
             "User-Agent": "qanatix-python/0.1.0",
         }
         if api_key:
             headers["Authorization"] = f"Bearer {api_key}"
+        if extra_headers:
+            headers.update(extra_headers)
         self._client = httpx.AsyncClient(
             base_url=base_url,
             headers=headers,
