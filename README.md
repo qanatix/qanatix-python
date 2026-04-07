@@ -43,6 +43,10 @@ print(rec.record_id)
 ```python
 import qanatix
 
+# Open — with agent identification (recommended)
+qx = qanatix.QanatixOpen(agent_id="my-app-name")
+
+# Open — anonymous (still works)
 qx = qanatix.QanatixOpen()
 
 results = qx.search("suppliers", "ISO 9001 certified Germany")
